@@ -68,20 +68,20 @@ src = np.float32(
     [(img_size[0] * 5 / 6) + 60, img_size[1]],
     [(img_size[0] / 2 + 70), img_size[1] / 2 + 100]])
 dst = np.float32(
-    [[(img_size[0] / 4), 0],
-    [(img_size[0] / 4), img_size[1]],
-    [(img_size[0] * 3 / 4), img_size[1]],
-    [(img_size[0] * 3 / 4), 0]])
+    [[(img_size[0] / 4 - 100), 0],
+    [(img_size[0] / 4 - 100), img_size[1]],
+    [(img_size[0] * 3 / 4 + 100), img_size[1]],
+    [(img_size[0] * 3 / 4 + 100), 0]])
 ```
 
 This resulted in the following source and destination points:
 
 | Source        | Destination   | 
 |:-------------:|:-------------:| 
-| 585, 460      | 320, 0        | 
-| 203, 720      | 320, 720      |
-| 1127, 720     | 960, 720      |
-| 710, 460      | 960, 0        |
+| 585, 460      | 220, 0        | 
+| 203, 720      | 220, 720      |
+| 1127, 720     | 1060, 720      |
+| 710, 460      | 1060, 0        |
 
 I verified that my perspective transform was working as expected by drawing the `src` and `dst` points onto a test image and its warped counterpart to verify that the lines appear parallel in the warped image as follows:
 
@@ -121,7 +121,7 @@ offset_left = (left_fit[0] * img.shape[0] ** 2) + (left_fit[1] * img.shape[0]) +
 distance_to_center = (offset_right + offset_left)/2.0 - 640
 distance_to_center = distance_to_center * 3.7 / 700 #changing the distance to m
 ```
-in this code the `offset_right` and `offset_left` values represent the x values of the fitted polynomials in the bottom end of the image. this tells us exactly where the lane lines are where the car camera is also mounted. With the assumption that the camera is mounted at the middle of the car if take the average of the offsets and reduce the center of the image from it the relative position of the car will be calculated. If the value is positive the car is a little right of the center, otherwise the car is a little to the left. The last line of the code changes this values back to meter with the conversion that was already explained. 
+in this code the `offset_right` and `offset_left` values represent the x values of the fitted polynomials in the bottom end of the image. this tells us exactly where the lane lines are where the car camera is also mounted. With the assumption that the camera is mounted at the middle of the car if take the average of the offsets and reduce the center of the image from it the relative position of the car will be calculated. If the value is positive the car is a little left of the center, otherwise the car is a right óf the center. The last line of the code changes this values back to meter with the conversion that was already explained. 
 
 Now it's time to use all the found information and show them in the original image that was fed into the pipeline. For this all the transformation that we had should be reversed to obtain the lane positions on the original image. For this the function `backTransformation()` is defined in the second last snippet of `example.ipynb` code. 
 An example output of this function which takes as input one of the test images is as follows: 
